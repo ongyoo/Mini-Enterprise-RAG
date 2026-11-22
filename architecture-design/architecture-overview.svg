@@ -1,0 +1,189 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 850" width="1280" height="850" font-family="'Sukhumvit Set', 'Noto Sans Thai', 'Leelawadee UI', Inter, Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5a6170"/>
+    </marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2e7d32"/>
+    </marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b26a00"/>
+    </marker>
+    <style>
+      .title { font-size: 22px; font-weight: 700; fill: #1f2430; }
+      .sub { font-size: 13px; fill: #5a6170; }
+      .zone { font-size: 13px; font-weight: 700; fill: #3a4252; letter-spacing: .3px; }
+      .h { font-size: 13.5px; font-weight: 700; fill: #1f2430; }
+      .t { font-size: 11.5px; fill: #4a5160; }
+      .lbl { font-size: 11px; fill: #5a6170; }
+      .ok { font-size: 11px; fill: #2e7d32; }
+      .or { font-size: 11px; fill: #b26a00; }
+      .ln { stroke: #5a6170; stroke-width: 1.6; fill: none; }
+      .lg { stroke: #2e7d32; stroke-width: 1.8; fill: none; }
+      .lo { stroke: #b26a00; stroke-width: 1.6; fill: none; }
+      .ld { stroke: #5a6170; stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
+      .node { fill: #ffffff; stroke: #5b6b8c; stroke-width: 1.4; }
+    </style>
+  </defs>
+
+  <rect width="1280" height="850" rx="14" fill="#ffffff"/>
+  <text x="40" y="38" class="title">Enterprise AI Chat RAG — Architecture Design Overview</text>
+  <text x="40" y="60" class="sub">พนักงาน 5,000 คน · 50,000 คำถาม/วัน · ออกแบบรองรับพีค 7–14 RPS · p95 ≤ 5 วินาที</text>
+
+  <!-- Row A: entry -->
+  <rect x="40" y="80" width="250" height="56" rx="10" fill="#e8f0fe" stroke="#4a6fd1" stroke-width="1.5"/>
+  <text x="165" y="103" text-anchor="middle" class="h">พนักงาน · Chat UI</text>
+  <text x="165" y="122" text-anchor="middle" class="t">Web / Teams</text>
+
+  <rect x="340" y="80" width="290" height="56" rx="10" fill="#ede7f6" stroke="#6a4fb3" stroke-width="1.5"/>
+  <text x="485" y="103" text-anchor="middle" class="h">API Gateway</text>
+  <text x="485" y="122" text-anchor="middle" class="t">SSO (OIDC) · ตรวจ JWT · rate limit</text>
+
+  <rect x="680" y="80" width="280" height="56" rx="10" fill="#fff3e0" stroke="#e08a00" stroke-width="1.5"/>
+  <text x="820" y="103" text-anchor="middle" class="h">FastAPI (modular monolith)</text>
+  <text x="820" y="122" text-anchor="middle" class="t">stateless replicas หลัง load balancer</text>
+
+  <line x1="290" y1="108" x2="338" y2="108" class="ln" marker-end="url(#a)"/>
+  <line x1="630" y1="108" x2="678" y2="108" class="ln" marker-end="url(#a)"/>
+
+  <!-- Workflow zone -->
+  <rect x="40" y="166" width="920" height="284" rx="12" fill="#f3f4f8" stroke="#9aa3b5" stroke-width="1.5"/>
+  <text x="130" y="190" class="zone">QUERY WORKFLOW — LangGraph</text>
+  <text x="372" y="190" class="lbl">deterministic · ทุกทางที่ล้มเหลวมี fallback</text>
+
+  <path d="M700,136 V152 H100 V208" class="ln" marker-end="url(#a)"/>
+
+  <rect x="60" y="210" width="156" height="60" rx="8" class="node"/>
+  <text x="138" y="234" text-anchor="middle" class="h">Guardrails</text>
+  <text x="138" y="254" text-anchor="middle" class="t">injection · scope · PII</text>
+
+  <rect x="238" y="210" width="156" height="60" rx="8" class="node"/>
+  <text x="316" y="234" text-anchor="middle" class="h">Cache check</text>
+  <text x="316" y="254" text-anchor="middle" class="t">มี cache ที่มีสิทธิ์?</text>
+
+  <rect x="416" y="210" width="156" height="60" rx="8" class="node"/>
+  <text x="494" y="234" text-anchor="middle" class="h">Hybrid retrieval</text>
+  <text x="494" y="254" text-anchor="middle" class="t">กรองสิทธิ์ก่อน top-K</text>
+
+  <rect x="594" y="210" width="156" height="60" rx="8" class="node"/>
+  <text x="672" y="234" text-anchor="middle" class="h">Rerank + evidence</text>
+  <text x="672" y="254" text-anchor="middle" class="t">หลักฐานพอไหม</text>
+
+  <rect x="772" y="210" width="156" height="60" rx="8" fill="#e6f0fb" stroke="#2f6db3" stroke-width="1.4"/>
+  <text x="850" y="234" text-anchor="middle" class="h">LLM generation</text>
+  <text x="850" y="254" text-anchor="middle" class="t">ตอบจาก context เท่านั้น</text>
+
+  <line x1="216" y1="240" x2="236" y2="240" class="ln" marker-end="url(#a)"/>
+  <line x1="394" y1="240" x2="414" y2="240" class="lg" marker-end="url(#ag)"/>
+  <line x1="572" y1="240" x2="592" y2="240" class="ln" marker-end="url(#a)"/>
+  <line x1="750" y1="240" x2="770" y2="240" class="lg" marker-end="url(#ag)"/>
+  <text x="404" y="205" text-anchor="middle" class="ok">miss</text>
+  <text x="760" y="205" text-anchor="middle" class="ok">พอ</text>
+
+  <rect x="238" y="320" width="156" height="56" rx="8" class="node"/>
+  <text x="316" y="343" text-anchor="middle" class="h">Recheck</text>
+  <text x="316" y="362" text-anchor="middle" class="t">สิทธิ์ + version ปัจจุบัน</text>
+  <line x1="316" y1="270" x2="316" y2="318" class="ln" marker-end="url(#a)"/>
+  <text x="324" y="298" class="lbl">hit</text>
+
+  <rect x="594" y="320" width="156" height="56" rx="8" fill="#fff6e5" stroke="#b26a00" stroke-width="1.4"/>
+  <text x="672" y="343" text-anchor="middle" class="h">Abstain / fallback</text>
+  <text x="672" y="362" text-anchor="middle" class="t">"ไม่มีข้อมูลส่วนนี้" + หัวข้อ</text>
+  <line x1="672" y1="270" x2="672" y2="318" class="lo" marker-end="url(#ao)"/>
+  <text x="680" y="298" class="or">ไม่พอ</text>
+
+  <rect x="772" y="320" width="156" height="56" rx="8" class="node"/>
+  <text x="850" y="343" text-anchor="middle" class="h">Output validation</text>
+  <text x="850" y="362" text-anchor="middle" class="t">citation · ตัวเลข · leak</text>
+  <line x1="850" y1="270" x2="850" y2="318" class="ln" marker-end="url(#a)"/>
+  <line x1="772" y1="348" x2="752" y2="348" class="lo" marker-end="url(#ao)"/>
+  <text x="762" y="392" text-anchor="middle" class="or">ไม่ผ่าน</text>
+
+  <path d="M316,376 V412 H830 V378" class="ln" marker-end="url(#a)"/>
+  <text x="440" y="406" class="lbl">cache hit ยังต้องผ่าน output validation</text>
+
+  <path d="M928,348 H946 V138" class="lg" marker-end="url(#ag)"/>
+  <path d="M672,376 V434 H946 V350" class="lo"/>
+  <text x="936" y="428" text-anchor="end" class="or">fallback ก็ส่งกลับทางเดียวกัน</text>
+  <text x="940" y="160" text-anchor="end" class="ok">คำตอบ + citations</text>
+
+  <!-- Infrastructure -->
+  <rect x="40" y="528" width="290" height="100" rx="10" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="185" y="552" text-anchor="middle" class="h">PostgreSQL + pgvector</text>
+  <text x="185" y="572" text-anchor="middle" class="t">HNSW + full-text (hybrid)</text>
+  <text x="185" y="590" text-anchor="middle" class="t">ACL metadata · Row-Level Security</text>
+  <text x="185" y="608" text-anchor="middle" class="t">HA · backup · connection pooling</text>
+
+  <rect x="355" y="528" width="270" height="100" rx="10" fill="#fdecea" stroke="#c62828" stroke-width="1.5"/>
+  <text x="490" y="552" text-anchor="middle" class="h">Redis</text>
+  <text x="490" y="572" text-anchor="middle" class="t">response / embedding / retrieval cache</text>
+  <text x="490" y="590" text-anchor="middle" class="t">key = scope + versions · TTL สั้น</text>
+  <text x="490" y="608" text-anchor="middle" class="t">rate limit</text>
+
+  <rect x="650" y="528" width="310" height="100" rx="10" fill="#e6f4ea" stroke="#2e7d32" stroke-width="1.5"/>
+  <text x="805" y="552" text-anchor="middle" class="h">Azure OpenAI</text>
+  <text x="805" y="572" text-anchor="middle" class="t">GPT-4.1 mini (route ข้อยากไปโมเดลใหญ่)</text>
+  <text x="805" y="590" text-anchor="middle" class="t">text-embedding-3-small</text>
+  <text x="805" y="608" text-anchor="middle" class="t">หลาย deployment / region เมื่อ scale</text>
+
+  <line x1="185" y1="450" x2="185" y2="526" class="ld" marker-end="url(#a)"/>
+  <line x1="490" y1="450" x2="490" y2="526" class="ld" marker-end="url(#a)"/>
+  <text x="193" y="490" class="lbl">ค้น (vector + full-text)</text>
+  <text x="498" y="490" class="lbl">cache · rate limit</text>
+
+  <line x1="805" y1="450" x2="805" y2="462" class="ld"/>
+  <rect x="668" y="464" width="274" height="40" rx="20" fill="#f3e8fd" stroke="#7b1fa2" stroke-width="1.4" stroke-dasharray="5 3"/>
+  <text x="805" y="481" text-anchor="middle" class="h" fill="#5b1880">LLM Gateway · LiteLLM / Azure APIM</text>
+  <text x="805" y="497" text-anchor="middle" class="lbl">เพิ่มเมื่อ scale: fallback · quota · budget ต่อฝ่าย</text>
+  <line x1="805" y1="504" x2="805" y2="526" class="ld" marker-end="url(#a)"/>
+  <text x="660" y="458" text-anchor="end" class="lbl">embed คำถาม · generate</text>
+
+  <!-- Ingestion -->
+  <rect x="1000" y="80" width="240" height="548" rx="12" fill="#f7f7f9" stroke="#9aa3b5" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="1020" y="106" class="zone">INGESTION (async)</text>
+
+  <rect x="1020" y="120" width="200" height="52" rx="8" class="node"/>
+  <text x="1120" y="142" text-anchor="middle" class="h">แหล่งเอกสาร</text>
+  <text x="1120" y="160" text-anchor="middle" class="t">PDF · DOCX · นโยบาย</text>
+
+  <rect x="1020" y="196" width="200" height="52" rx="8" class="node"/>
+  <text x="1120" y="218" text-anchor="middle" class="h">Queue + worker</text>
+  <text x="1120" y="236" text-anchor="middle" class="t">scale แยกจาก API</text>
+
+  <rect x="1020" y="272" width="200" height="52" rx="8" class="node"/>
+  <text x="1120" y="294" text-anchor="middle" class="h">Parse · clean · chunk</text>
+  <text x="1120" y="312" text-anchor="middle" class="t">LangChain loaders</text>
+
+  <rect x="1020" y="348" width="200" height="52" rx="8" class="node"/>
+  <text x="1120" y="370" text-anchor="middle" class="h">Metadata + ACL</text>
+  <text x="1120" y="388" text-anchor="middle" class="t">sync สิทธิ์กับระบบต้นทาง</text>
+
+  <rect x="1020" y="424" width="200" height="52" rx="8" class="node"/>
+  <text x="1120" y="446" text-anchor="middle" class="h">Embed chunks</text>
+  <text x="1120" y="464" text-anchor="middle" class="t">batch · retry</text>
+
+  <rect x="1020" y="500" width="200" height="60" rx="8" class="node"/>
+  <text x="1120" y="522" text-anchor="middle" class="h">Upsert by version</text>
+  <text x="1120" y="541" text-anchor="middle" class="t">ล้าง cache ที่เกี่ยวข้อง</text>
+
+  <line x1="1120" y1="172" x2="1120" y2="194" class="ln" marker-end="url(#a)"/>
+  <line x1="1120" y1="248" x2="1120" y2="270" class="ln" marker-end="url(#a)"/>
+  <line x1="1120" y1="324" x2="1120" y2="346" class="ln" marker-end="url(#a)"/>
+  <line x1="1120" y1="400" x2="1120" y2="422" class="ln" marker-end="url(#a)"/>
+  <line x1="1120" y1="476" x2="1120" y2="498" class="ln" marker-end="url(#a)"/>
+
+  <path d="M1020,450 H985 V578 H962" class="ld" marker-end="url(#a)"/>
+  <path d="M1120,560 V646 H185 V630" class="ld" marker-end="url(#a)"/>
+  <text x="640" y="640" text-anchor="middle" class="lbl">เขียน chunks + embeddings + ACL ลง pgvector</text>
+
+  <!-- Cross-cutting bands -->
+  <rect x="40" y="664" width="1200" height="74" rx="10" fill="#fdecea" stroke="#c62828" stroke-width="1.2"/>
+  <text x="60" y="690" class="zone">SECURITY &amp; GOVERNANCE</text>
+  <text x="60" y="714" class="t">SSO (OIDC) · ตรวจ JWT ฝั่ง server · RBAC + ABAC ใน SQL · PostgreSQL RLS · กรองสิทธิ์ก่อน top-K · LLM ไม่เคยเห็นเอกสารที่ไม่มีสิทธิ์</text>
+  <text x="60" y="731" class="t">guardrails 8 ชั้น · deny by default · เข้ารหัส in transit / at rest · PII redaction · immutable audit · ไม่ log ข้อความลับแบบดิบ · PDPA</text>
+
+  <rect x="40" y="752" width="1200" height="74" rx="10" fill="#eef0f4" stroke="#9aa3b5" stroke-width="1.2"/>
+  <text x="60" y="778" class="zone">OBSERVABILITY · EVALUATION · D2</text>
+  <text x="60" y="802" class="t">OpenTelemetry trace ID ทุกคำขอ → Prometheus / Grafana · Loki / Tempo (หรือ Azure Monitor) · latency ต่อขั้น · token / cost · cache hit · fallback rate</text>
+  <text x="60" y="819" class="t">Golden dataset ใน CI → MLflow (runs · metrics · prompt versions) → canary · alert เมื่อ SLO burn / quality ตก · runbook · RTO / RPO · RCA</text>
+</svg>
