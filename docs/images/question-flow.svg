@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 740" width="920" height="740" font-family="Inter, 'Helvetica Neue', Arial, sans-serif">
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#5a6170"/>
+    </marker>
+    <marker id="ag" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2e7d32"/>
+    </marker>
+    <marker id="ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#c2185b"/>
+    </marker>
+    <marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b26a00"/>
+    </marker>
+    <style>
+      .title { font-size: 19px; font-weight: 700; fill: #1f2430; }
+      .node { font-size: 13.5px; font-weight: 700; fill: #1f2430; font-family: Menlo, Consolas, monospace; }
+      .h { font-size: 14px; font-weight: 700; fill: #1f2430; }
+      .t { font-size: 11.5px; fill: #4a5160; }
+      .lbl { font-size: 11.5px; fill: #5a6170; font-style: italic; }
+      .ok { font-size: 11.5px; fill: #2e7d32; font-style: italic; }
+      .pk { font-size: 11.5px; fill: #c2185b; font-style: italic; }
+      .or { font-size: 11.5px; fill: #b26a00; font-style: italic; }
+      .ln { stroke: #5a6170; stroke-width: 1.6; fill: none; }
+      .lg { stroke: #2e7d32; stroke-width: 1.8; fill: none; }
+      .lp { stroke: #c2185b; stroke-width: 1.6; fill: none; stroke-dasharray: 5 4; }
+      .lo { stroke: #b26a00; stroke-width: 1.6; fill: none; }
+    </style>
+  </defs>
+
+  <rect width="920" height="740" rx="14" fill="#ffffff"/>
+  <text x="30" y="34" class="title">How a question flows</text>
+
+  <!-- Main column -->
+  <rect x="330" y="52" width="200" height="40" rx="20" fill="#e8f0fe" stroke="#4a6fd1" stroke-width="1.5"/>
+  <text x="430" y="77" text-anchor="middle" class="h">Question</text>
+
+  <rect x="330" y="120" width="200" height="50" rx="8" fill="#fff" stroke="#5b6b8c" stroke-width="1.5"/>
+  <text x="430" y="141" text-anchor="middle" class="node">validate_input</text>
+  <text x="430" y="159" text-anchor="middle" class="t">length · injection · scope · PII</text>
+
+  <rect x="330" y="210" width="200" height="50" rx="8" fill="#fff" stroke="#5b6b8c" stroke-width="1.5"/>
+  <text x="430" y="231" text-anchor="middle" class="node">retrieve</text>
+  <text x="430" y="249" text-anchor="middle" class="t">embed · pgvector top-5 in scope</text>
+
+  <rect x="330" y="300" width="200" height="50" rx="8" fill="#fff" stroke="#5b6b8c" stroke-width="1.5"/>
+  <text x="430" y="321" text-anchor="middle" class="node">evidence_gate</text>
+  <text x="430" y="339" text-anchor="middle" class="t">similarity ≥ threshold + SOP</text>
+
+  <rect x="330" y="390" width="200" height="50" rx="8" fill="#fbeee6" stroke="#c9622f" stroke-width="1.5"/>
+  <text x="430" y="411" text-anchor="middle" class="node">generate</text>
+  <text x="430" y="429" text-anchor="middle" class="t">Claude · structured output</text>
+
+  <rect x="330" y="480" width="200" height="50" rx="8" fill="#fff" stroke="#5b6b8c" stroke-width="1.5"/>
+  <text x="430" y="501" text-anchor="middle" class="node">verify_output</text>
+  <text x="430" y="519" text-anchor="middle" class="t">citations real · numbers in source</text>
+
+  <rect x="330" y="580" width="200" height="50" rx="8" fill="#e3f2fd" stroke="#1565c0" stroke-width="1.5"/>
+  <text x="430" y="601" text-anchor="middle" class="node">audit_and_finalize</text>
+  <text x="430" y="619" text-anchor="middle" class="t">HMAC-hashed log · latency</text>
+
+  <rect x="330" y="668" width="200" height="40" rx="20" fill="#e8f0fe" stroke="#4a6fd1" stroke-width="1.5"/>
+  <text x="430" y="693" text-anchor="middle" class="h">Response</text>
+
+  <line x1="430" y1="92" x2="430" y2="118" class="ln" marker-end="url(#a)"/>
+  <line x1="430" y1="170" x2="430" y2="208" class="lg" marker-end="url(#ag)"/>
+  <text x="438" y="194" class="ok">allowed</text>
+  <line x1="430" y1="260" x2="430" y2="298" class="ln" marker-end="url(#a)"/>
+  <line x1="430" y1="350" x2="430" y2="388" class="lg" marker-end="url(#ag)"/>
+  <text x="438" y="374" class="ok">pass</text>
+  <line x1="430" y1="440" x2="430" y2="478" class="ln" marker-end="url(#a)"/>
+  <line x1="430" y1="530" x2="430" y2="578" class="lg" marker-end="url(#ag)"/>
+  <text x="438" y="552" class="ok">answered</text>
+  <text x="438" y="566" class="ok">or one clarifying question</text>
+  <line x1="430" y1="630" x2="430" y2="666" class="ln" marker-end="url(#a)"/>
+
+  <!-- Left: rewrite -->
+  <rect x="60" y="296" width="210" height="80" rx="8" fill="#fde8ef" stroke="#c2185b" stroke-width="1.5"/>
+  <text x="165" y="318" text-anchor="middle" class="node">rewrite_query</text>
+  <text x="165" y="336" text-anchor="middle" class="t">Claude fixes typo / slang</text>
+  <text x="165" y="351" text-anchor="middle" class="t">using handbook titles · max once</text>
+  <text x="165" y="368" text-anchor="middle" class="pk">ลาป๊วยทำไง → ขั้นตอนการลาป่วย</text>
+
+  <line x1="330" y1="325" x2="272" y2="325" class="lp" marker-end="url(#ap)"/>
+  <text x="300" y="316" text-anchor="middle" class="pk">weak</text>
+  <path d="M330,505 H165 V378" class="lp" marker-end="url(#ap)"/>
+  <text x="248" y="498" text-anchor="middle" class="pk">"cannot answer"</text>
+  <path d="M165,296 V235 H328" class="lp" marker-end="url(#ap)"/>
+  <text x="246" y="228" text-anchor="middle" class="pk">search again</text>
+
+  <!-- Right: outcomes -->
+  <rect x="620" y="112" width="240" height="66" rx="8" fill="#fdecea" stroke="#c62828" stroke-width="1.5"/>
+  <text x="740" y="134" text-anchor="middle" class="h">Refused</text>
+  <text x="740" y="152" text-anchor="middle" class="t">PROMPT_INJECTION · OUT_OF_SCOPE</text>
+  <text x="740" y="168" text-anchor="middle" class="t">no documents, no model call</text>
+  <line x1="530" y1="145" x2="618" y2="145" class="ln" stroke="#c62828" marker-end="url(#a)"/>
+
+  <rect x="620" y="286" width="240" height="90" rx="8" fill="#fff6e5" stroke="#b26a00" stroke-width="1.5"/>
+  <text x="740" y="308" text-anchor="middle" class="h">Fallback</text>
+  <text x="740" y="326" text-anchor="middle" class="t">"ไม่มีข้อมูลส่วนนี้" or "ช่วยพิมพ์ใหม่"</text>
+  <text x="740" y="342" text-anchor="middle" class="t">+ list of topics you can ask</text>
+  <text x="740" y="360" text-anchor="middle" class="t">sources: [] · reason_code</text>
+
+  <line x1="530" y1="325" x2="618" y2="325" class="lo" marker-end="url(#ao)"/>
+  <text x="574" y="316" text-anchor="middle" class="or">still weak</text>
+  <path d="M530,415 H690 V378" class="lo" marker-end="url(#ao)"/>
+  <text x="610" y="430" text-anchor="middle" class="or">model error</text>
+  <path d="M530,520 H790 V378" class="lo" marker-end="url(#ao)"/>
+  <text x="660" y="537" text-anchor="middle" class="or">bad citation / invented number</text>
+  <path d="M60,336 H40 V106 H600 V300 H618" class="lo" marker-end="url(#ao)"/>
+  <text x="250" y="100" text-anchor="middle" class="or">not understood → UNCLEAR_QUERY</text>
+
+  <!-- Right rail to audit -->
+  <path d="M860,145 H885 V605 H532" class="ln" marker-end="url(#a)"/>
+  <line x1="860" y1="331" x2="885" y2="331" class="ln"/>
+  <text x="878" y="640" text-anchor="end" class="lbl">every path is logged</text>
+</svg>

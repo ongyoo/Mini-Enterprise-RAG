@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HR Assistant (จำลอง)</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --surface: #ffffff; --text: #1c2430; --muted: #687385; --border: #e2e6ec;
+    --accent: #2457d6; --accent-text: #ffffff; --user-bubble: #2457d6; --user-text: #ffffff;
+    --ok: #1d7a46; --ok-bg: #e5f4eb; --warn: #9a5b00; --warn-bg: #fdf1dc;
+    --bad: #b3261e; --bad-bg: #fbe7e5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151a; --surface: #1b2028; --text: #e6e9ee; --muted: #9aa4b2; --border: #2c333e;
+      --accent: #6d95ff; --accent-text: #0d1220; --user-bubble: #3a63d8; --user-text: #ffffff;
+      --ok: #6fd39b; --ok-bg: #173325; --warn: #f0c062; --warn-bg: #3a2c12;
+      --bad: #ff8a80; --bad-bg: #3d1c1a;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg); color: var(--text);
+    font: 15px/1.6 "Noto Sans Thai", "Sukhumvit Set", "Leelawadee UI", system-ui, sans-serif;
+    display: flex; flex-direction: column;
+  }
+  header {
+    display: flex; align-items: center; gap: 12px; padding: 12px 16px;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+  }
+  header h1 { font-size: 16px; margin: 0; flex: 1; }
+  header small { color: var(--muted); font-weight: normal; display: block; font-size: 12px; }
+  select, button, textarea { font: inherit; color: inherit; }
+  select {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px;
+  }
+  main { flex: 1; overflow-y: auto; padding: 16px; }
+  .thread { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+  .msg { display: flex; }
+  .msg.user { justify-content: flex-end; }
+  .bubble {
+    max-width: 85%; padding: 10px 14px; border-radius: 14px;
+    background: var(--surface); border: 1px solid var(--border); white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .user .bubble { background: var(--user-bubble); color: var(--user-text); border-color: transparent; }
+  .badge {
+    display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px;
+    margin-bottom: 6px; font-weight: 600;
+  }
+  .badge.answered { color: var(--ok); background: var(--ok-bg); }
+  .badge.fallback { color: var(--warn); background: var(--warn-bg); }
+  .badge.refused, .badge.error { color: var(--bad); background: var(--bad-bg); }
+  .sources { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 8px; white-space: normal; }
+  .sources details { margin-top: 4px; }
+  .sources summary { cursor: pointer; color: var(--accent); font-size: 13px; }
+  .sources pre {
+    white-space: pre-wrap; font: 13px/1.5 inherit; color: var(--muted);
+    background: var(--bg); padding: 8px; border-radius: 8px; margin: 6px 0 0;
+  }
+  .meta { margin-top: 8px; font-size: 12px; color: var(--muted); white-space: normal; }
+  .empty { text-align: center; color: var(--muted); margin-top: 12vh; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; }
+  .chip {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 999px;
+    padding: 6px 12px; cursor: pointer; font-size: 14px;
+  }
+  .chip:hover { border-color: var(--accent); }
+  footer { background: var(--surface); border-top: 1px solid var(--border); padding: 12px 16px; }
+  form { max-width: 760px; margin: 0 auto; display: flex; gap: 8px; align-items: flex-end; }
+  textarea {
+    flex: 1; resize: none; max-height: 160px; padding: 10px 12px; border-radius: 12px;
+    border: 1px solid var(--border); background: var(--bg);
+  }
+  textarea:focus, select:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  button.send {
+    background: var(--accent); color: var(--accent-text); border: 0; border-radius: 12px;
+    padding: 10px 18px; cursor: pointer; font-weight: 600;
+  }
+  button.send:disabled { opacity: .5; cursor: default; }
+  .note { max-width: 760px; margin: 6px auto 0; font-size: 12px; color: var(--muted); }
+  .typing { color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>HR Assistant <small>ตอบจากเอกสารจำลองเรื่องการลาและการเบิกค่าใช้จ่าย</small></h1>
+  <label>
+    <span hidden>ตัวตน</span>
+    <select id="identity" aria-label="ตัวตน">
+      <option value="employee-demo-token">พนักงาน</option>
+      <option value="admin-demo-token">ผู้ดูแลระบบ</option>
+    </select>
+  </label>
+</header>
+
+<main id="scroller">
+  <div class="thread" id="thread">
+    <div class="empty" id="empty">
+      <div>ถามเรื่องการลาหรือการเบิกค่าใช้จ่ายได้เลย</div>
+      <div class="chips">
+        <button class="chip" type="button">ลาป่วยต้องแนบใบรับรองแพทย์ไหม</button>
+        <button class="chip" type="button">ลาพักร้อนต้องขอล่วงหน้ากี่วัน</button>
+        <button class="chip" type="button">เบิกค่าแท็กซี่ได้สูงสุดเท่าไหร่</button>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <form id="form">
+    <textarea id="input" rows="1" maxlength="1000" placeholder="พิมพ์คำถาม แล้วกด Enter" aria-label="คำถาม"></textarea>
+    <button class="send" id="send" type="submit">ส่ง</button>
+  </form>
+  <div class="note">ข้อมูลทั้งหมดเป็นข้อมูลสมมติ ไม่ใช่นโยบายจริง · แต่ละคำถามตอบแยกกัน ระบบไม่จำคำถามก่อนหน้า</div>
+</footer>
+
+<script>
+const STATUS_LABEL = {
+  answered: "ตอบจากเอกสาร",
+  fallback: "ข้อมูลไม่พอ",
+  refused: "ปฏิเสธ",
+  error: "ระบบขัดข้อง",
+};
+
+const thread = document.getElementById("thread");
+const scroller = document.getElementById("scroller");
+const input = document.getElementById("input");
+const send = document.getElementById("send");
+const identity = document.getElementById("identity");
+
+function el(tag, className, text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function addMessage(role, bubble) {
+  document.getElementById("empty")?.remove();
+  const row = el("div", `msg ${role}`);
+  row.append(bubble);
+  thread.append(row);
+  scroller.scrollTop = scroller.scrollHeight;
+  return row;
+}
+
+function renderAnswer(resp) {
+  const bubble = el("div", "bubble");
+  bubble.append(el("span", `badge ${resp.status}`, STATUS_LABEL[resp.status] ?? resp.status));
+  bubble.append(el("div", "", resp.answer));
+
+  const byDocument = new Map();
+  for (const s of resp.sources) {
+    if (!byDocument.has(s.document_id)) byDocument.set(s.document_id, { ...s, snippets: [] });
+    byDocument.get(s.document_id).snippets.push(s.snippet);
+  }
+  if (byDocument.size) {
+    const box = el("div", "sources");
+    box.append(el("strong", "", "แหล่งอ้างอิง"));
+    for (const doc of byDocument.values()) {
+      const details = el("details");
+      details.append(el("summary", "", `${doc.document_id} v${doc.version} · ${doc.title}`));
+      for (const snippet of doc.snippets) details.append(el("pre", "", snippet));
+      box.append(details);
+    }
+    bubble.append(box);
+  }
+
+  if (resp.debug.rewritten_query) {
+    bubble.append(el("div", "meta", `ค้นหาเป็น: "${resp.debug.rewritten_query}"`));
+  }
+
+  const parts = [`${Math.round(resp.debug.latency_ms)} ms`];
+  if (resp.retrieval.best_similarity !== null) parts.push(`similarity ${resp.retrieval.best_similarity}`);
+  if (resp.reason_code) parts.push(resp.reason_code);
+  if (resp.debug.model) parts.push(resp.debug.model);
+  bubble.append(el("div", "meta", parts.join(" · ")));
+  return bubble;
+}
+
+async function ask(question) {
+  addMessage("user", el("div", "bubble", question));
+  const pending = addMessage("assistant", el("div", "bubble typing", "กำลังค้นเอกสาร…"));
+  send.disabled = true;
+  try {
+    const r = await fetch("/api/v1/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${identity.value}` },
+      body: JSON.stringify({ query: question }),
+    });
+    const body = await r.json();
+    pending.replaceChildren(
+      r.ok ? renderAnswer(body) : el("div", "bubble", `ส่งคำถามไม่สำเร็จ: ${body.error?.message ?? r.status}`)
+    );
+  } catch {
+    pending.replaceChildren(el("div", "bubble", "เชื่อมต่อเซิร์ฟเวอร์ไม่ได้"));
+  } finally {
+    send.disabled = false;
+    input.focus();
+    scroller.scrollTop = scroller.scrollHeight;
+  }
+}
+
+document.getElementById("form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  const question = input.value.trim();
+  if (!question || send.disabled) return;
+  input.value = "";
+  input.style.height = "";
+  ask(question);
+});
+
+input.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && !e.shiftKey && !e.isComposing) {
+    e.preventDefault();
+    document.getElementById("form").requestSubmit();
+  }
+});
+
+input.addEventListener("input", () => {
+  input.style.height = "";
+  input.style.height = `${input.scrollHeight}px`;
+});
+
+for (const chip of document.querySelectorAll(".chip")) {
+  chip.addEventListener("click", () => ask(chip.textContent));
+}
+
+input.focus();
+</script>
+</body>
+</html>

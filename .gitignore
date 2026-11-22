@@ -1,0 +1,36 @@
+# Secrets: copy .env.example to .env and fill it in locally
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Downloaded embedding models (fastembed)
+.cache/
+
+# Evaluation reports: keep only the run quoted in README.md
+reports/*.json
+!reports/eval_20261122T165254.json
+
+# Original PDF export (contains the company name); the cleaned copy is in docs/
+/Mini Enterprise RAG.pdf
+
+# OS and editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
